@@ -1,0 +1,50 @@
+---
+title: {{PROJECT_NAME}} STATE
+status: active | paused | blocked | done
+next_action: {{ONE_CONCRETE_NEXT_STEP}}
+blockers: []
+last_touched: {{YYYY-MM-DD}}
+trigger_word: {{PROJECT_NAME_UPPERCASE}} ONLINE
+---
+
+# 🚨 FIRST ACTION FOR THIS SESSION
+
+Print the "Last session summary" block below verbatim as your first chat reply, before taking any other action. Do not summarize. Do not paraphrase. Print it as-is so the user sees exactly what was decided last time.
+
+# Last session summary (verbatim, for {{YOUR_NAME}} on resume)
+
+**Shipped:**
+- {{WHAT_SHIPPED_1}}
+- {{WHAT_SHIPPED_2}}
+
+**Decided:**
+- {{DECISION_1}}
+- {{DECISION_2}}
+
+**Open:**
+- {{OPEN_ITEM_1}}
+- {{OPEN_ITEM_2}}
+
+**Next session starts here:** {{NEXT_STEP}}
+
+# Tasks queued for this session
+
+## Tier 1 (critical, blocking)
+- [ ] {{T1_TASK_1}}
+
+## Tier 2 (important, not blocking)
+- [ ] {{T2_TASK_1}}
+
+## Tier 3 (nice to have)
+- [ ] {{T3_TASK_1}}
+
+# Context Claude needs
+
+- Repo: `{{REPO_PATH}}`
+- Deploy URL: {{DEPLOY_URL}}
+- Key files: {{KEY_FILES}}
+- External services in play: {{SERVICES}}
+
+# Blockers (with owner)
+
+- [ ] {{BLOCKER_1}} — owner: {{OWNER}}, ETA: {{ETA}}

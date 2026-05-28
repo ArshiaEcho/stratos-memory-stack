@@ -1,0 +1,43 @@
+# MEMORY
+
+Curated strategic index. Hand-maintained. Auto-loaded by Claude Code at session start.
+
+Keep this short. If it grows past one screen, you're losing signal.
+
+## Hard rules (never break)
+
+1. {{RULE_1}}
+2. {{RULE_2}}
+3. {{RULE_3}}
+
+## Current focus
+
+**North star:** {{NORTH_STAR}}
+**Active priority:** {{ACTIVE_PRIORITY}}
+**Cash sprint or deadline:** {{DEADLINE}}
+
+## Active clients
+
+| Client | Stage | Next action |
+|---|---|---|
+| {{CLIENT_1}} | {{STAGE}} | {{NEXT_ACTION}} |
+| {{CLIENT_2}} | {{STAGE}} | {{NEXT_ACTION}} |
+
+## Active projects
+
+| Project | Status | STATE.md path |
+|---|---|---|
+| {{PROJECT_1}} | {{STATUS}} | `projects/{{PROJECT_1}}/STATE.md` |
+| {{PROJECT_2}} | {{STATUS}} | `projects/{{PROJECT_2}}/STATE.md` |
+
+## Strategic anchors
+
+- {{ANCHOR_1}}
+- {{ANCHOR_2}}
+- {{ANCHOR_3}}
+
+## What I always want Claude to remember
+
+- {{REMINDER_1}}
+- {{REMINDER_2}}
+- {{REMINDER_3}}

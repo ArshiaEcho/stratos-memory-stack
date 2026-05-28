@@ -1,0 +1,19 @@
+{
+  "name": "stratos",
+  "owner": {
+    "name": "Stratos House AI",
+    "url": "https://www.stratosagency.ai"
+  },
+  "metadata": {
+    "description": "Free Claude Code stacks from Stratos House AI.",
+    "homepage": "https://www.stratosagency.ai"
+  },
+  "plugins": [
+    {
+      "name": "stratos-memory-stack",
+      "version": "1.0.0",
+      "source": "./plugin",
+      "description": "Six-layer memory stack for Claude Code: claude-mem, basic-memory, Obsidian, Pinecone, CLAUDE.md/MEMORY.md, and STATE.md. Auto-audits your machine and guides install."
+    }
+  ]
+}
