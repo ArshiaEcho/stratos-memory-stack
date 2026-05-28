@@ -1,0 +1,23 @@
+{
+  "name": "stratos-memory-stack",
+  "version": "1.0.0",
+  "description": "Six-layer persistent memory stack for Claude Code. Auto-audits which layers you have installed, then guides setup of the missing pieces.",
+  "author": {
+    "name": "Arshia Navabi",
+    "email": "arshia@stratosagency.ai",
+    "url": "https://www.stratosagency.ai"
+  },
+  "homepage": "https://github.com/ArshiaEcho/stratos-memory-stack",
+  "repository": "https://github.com/ArshiaEcho/stratos-memory-stack",
+  "license": "MIT",
+  "keywords": [
+    "memory",
+    "stack",
+    "obsidian",
+    "claude-mem",
+    "basic-memory",
+    "pinecone",
+    "knowledge-management",
+    "stratos"
+  ]
+}

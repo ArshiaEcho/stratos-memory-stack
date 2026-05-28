@@ -1,0 +1,76 @@
+# {{VAULT_OR_PROJECT_NAME}}
+
+{{ONE_LINE_DESCRIPTION}}
+
+## Owner
+
+- Name: {{YOUR_NAME}}
+
+## Structure
+
+```
+{{VAULT_NAME}}/
+├── inbox/           Quick captures, unsorted thoughts, raw ideas
+├── projects/        Active work with clear goals and deadlines
+├── areas/           Ongoing responsibilities
+├── resources/       Reference material organized by topic
+├── knowledge/
+│   ├── raw/         Source material, Claude reads but NEVER modifies
+│   └── wiki/        Claude-maintained compiled knowledge
+├── _templates/      Note templates for daily notes, projects, meetings
+├── _attachments/    Images, PDFs, and other binary files
+└── CLAUDE.md        This file, vault context for Claude Code
+```
+
+## Conventions
+
+### File naming
+- lowercase kebab-case: `my-note-title.md`
+- descriptive: `react-server-components-overview.md`, not `untitled-3.md`
+- daily notes prefixed with date: `2026-04-06.md`
+
+### Frontmatter
+All notes should include YAML frontmatter:
+
+```yaml
+---
+title: Note Title
+created: 2026-04-06
+tags: [topic, subtopic]
+status: seed | growing | evergreen
+type: note | project | meeting | resource | daily
+---
+```
+
+### Linking
+- `[[wiki-links]]` for internal connections. Prefer linking existing notes over creating new ones.
+- Tags in frontmatter only, never inline. Lowercase, hierarchical: `#learning/ai`, `#project/webapp`.
+
+## Memory System
+
+This vault uses the Stratos Memory Stack. Six layers.
+
+| Layer | Purpose |
+|---|---|
+| `claude-mem` | Auto-captures sessions to local SQLite + auto-injects at next session start. |
+| `basic-memory` MCP | Hybrid BM25 + vector retrieval over this vault. |
+| Obsidian wiki/ | Living knowledge with graph links. The reasoning layer. |
+| Pinecone `{{INDEX_NAME}}` | Immutable archives from `knowledge/raw/`. Semantic search at flat cost. |
+| `MEMORY.md` | Hand-curated strategic index at `~/.claude/projects/{{PROJECT_SLUG}}/memory/`. |
+| `STATE.md` per project | Per-project resume state under each `projects/<project>/STATE.md`. |
+
+**Query order for past context:** (1) basic-memory MCP, (2) claude-mem search, (3) MEMORY.md, (4) Pinecone for raw archives.
+
+## How Claude Should Behave
+
+- Never fabricate. Synthesize only from vault content or sources I provide.
+- Preserve voice when expanding drafts.
+- Suggest backlinks when reading or writing notes.
+- Be concise. Vault notes scannable, not essay-length.
+- Use templates from `_templates/` for new notes.
+- Use Pinecone for raw recall, not full file reads.
+- No em dashes anywhere. Use periods, commas, regular hyphens.
+
+## Active Context
+
+Per-project resume state lives in `projects/<project>/STATE.md`. Do not hand-maintain a long Active Context block here. Let STATE.md files + claude-mem + basic-memory carry that load.
