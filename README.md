@@ -126,6 +126,7 @@ If you want to read through everything before letting Claude touch your machine:
 - [`docs/03-basic-memory-setup.md`](docs/03-basic-memory-setup.md) — basic-memory MCP
 - [`docs/04-pinecone-setup.md`](docs/04-pinecone-setup.md) — Pinecone (optional)
 - [`docs/05-file-conventions.md`](docs/05-file-conventions.md) — CLAUDE.md, MEMORY.md, STATE.md
+- [`docs/mode-activators.md`](docs/mode-activators.md) — Mode Activators hook for multi-stream vaults (optional)
 - [`docs/architecture.md`](docs/architecture.md) — How it all fits together
 
 Templates to copy:
@@ -135,6 +136,7 @@ Templates to copy:
 - [`templates/STATE.md.template`](templates/STATE.md.template)
 - [`templates/pinecone_ingest.py`](templates/pinecone_ingest.py)
 - [`templates/pinecone_query.py`](templates/pinecone_query.py)
+- [`templates/mode-activator-hook.sh.template`](templates/mode-activator-hook.sh.template) — starter `UserPromptSubmit` hook with 2 example modes
 
 ## Recommended install order
 

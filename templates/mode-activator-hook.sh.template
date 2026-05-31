@@ -1,0 +1,81 @@
+#!/bin/bash
+# Mode Activator hook for Claude Code.
+#
+# Install:
+#   1. Save this file as ~/.claude/hooks/mode-activator.sh
+#   2. chmod +x ~/.claude/hooks/mode-activator.sh
+#   3. Register in ~/.claude/settings.json under hooks.UserPromptSubmit:
+#        {
+#          "hooks": {
+#            "UserPromptSubmit": [
+#              { "matcher": "", "hooks": [
+#                { "type": "command", "command": "bash /home/YOU/.claude/hooks/mode-activator.sh" }
+#              ]}
+#            ]
+#          }
+#        }
+#
+# Customize:
+#   - Replace BRAIN and PORTAL examples with your own mode names + file paths.
+#   - Add more `if echo "$PROMPT_LC" | grep -qE ...` blocks for new modes.
+#   - The ^[[:space:]]* anchor matters: it means the mode phrase must LEAD
+#     the prompt, so casual mentions like "thinking about my brain online
+#     dating app" do NOT incorrectly fire.
+#
+# See: https://github.com/ArshiaEcho/stratos-memory-stack/blob/main/docs/mode-activators.md
+
+set -euo pipefail
+
+PROMPT_JSON=$(cat)
+
+if command -v jq >/dev/null 2>&1; then
+  PROMPT=$(echo "$PROMPT_JSON" | jq -r '.prompt // .user_prompt // empty' 2>/dev/null || echo "$PROMPT_JSON")
+else
+  PROMPT="$PROMPT_JSON"
+fi
+
+PROMPT_LC=$(echo "$PROMPT" | tr '[:upper:]' '[:lower:]')
+
+MODE_ACTIVATOR=""
+
+set_mode() {
+  # SCRIPT-ORDER precedence: first matched if-block wins, regardless of
+  # which phrase appears first in the user's prompt text. Put your most-used
+  # mode at the top.
+  if [ -z "$MODE_ACTIVATOR" ]; then
+    MODE_ACTIVATOR="$1"
+  fi
+}
+
+# ---------- MODES (replace with your own) ----------
+
+if echo "$PROMPT_LC" | grep -qE '^[[:space:]]*(brain online)\b'; then
+  set_mode "## 🚨 MODE: BRAIN ONLINE
+
+**Load these files before responding:**
+- \`path/to/your/brain-playbook.md\`
+- \`path/to/your/active-tasks.md\`
+
+**SUPPRESS:** any auto-injected handoff from a different project stream. The user is in strategy mode, not client delivery mode."
+fi
+
+if echo "$PROMPT_LC" | grep -qE '^[[:space:]]*(portal online)\b'; then
+  set_mode "## 🚨 MODE: PORTAL ONLINE
+
+**Load these files before responding:**
+- \`path/to/your/portal/STATE.md\`
+- Latest portal session handoff doc
+
+**SUPPRESS:** any auto-injected context from non-portal streams."
+fi
+
+# Add more modes here. Same pattern. Five lines each.
+
+# ---------- Emit ----------
+
+if [ -n "$MODE_ACTIVATOR" ]; then
+  echo "$MODE_ACTIVATOR"
+  echo ""
+fi
+
+exit 0
