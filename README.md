@@ -70,16 +70,15 @@ That is the wrong-stream problem. The fix is small. A `UserPromptSubmit` hook sc
 
 You type the phrase. The hook fires before Claude reads the auto-injection. The mode wins.
 
-Common modes (you define your own):
+Define your own modes. The shape is `<NAME> ONLINE` (or any phrase you want to anchor on). A few illustrative examples to copy and adapt:
 
 | Phrase | Loads | Suppresses |
 |---|---|---|
-| `BRAIN ONLINE` | brain-upgrade playbook, active tasks, latest phase notes | client delivery, portal status |
-| `PORTAL ONLINE` | client-portal STATE.md, latest portal handoff | brain, product, marketing |
-| `MONOLI ONLINE` | monoli STATE.md, latest monoli brief | non-Monoli streams |
-| `ELORA ONLINE` | Elora STATE.md, latest Elora handoff | non-Elora streams |
-| `OMNIPHI ONLINE` | omniphi STATE.md, latest handoff | non-OmniPhi streams, co-founder tasks |
-| `NEPHROCAN ONLINE` | nephrocan STATE.md, latest handoff | non-Nephrocan streams |
+| `STRATEGY ONLINE` | your strategy playbook, current backlog | client-delivery + ops streams |
+| `CLIENT-A ONLINE` | `projects/client-a/STATE.md`, latest client-a handoff | all other client streams |
+| `PRODUCT ONLINE` | `product/STATE.md`, latest sprint notes | non-product streams |
+
+Replace `STRATEGY` / `CLIENT-A` / `PRODUCT` with the names of your actual streams. The pattern is what matters, not the labels.
 
 The hook only adds the activator block when a phrase matches. Normal prompts are untouched. Adding a new mode is a five-line edit.
 

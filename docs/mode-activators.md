@@ -73,28 +73,31 @@ set_mode() {
 # leading whitespace). This prevents false positives like "thinking about my
 # brain online dating app" from firing the BRAIN ONLINE mode. The phrase must
 # LEAD the prompt to be treated as a mode switch.
+#
+# The two example modes below are illustrative. Replace the phrase names and
+# file paths with your own project streams.
 
-if echo "$PROMPT_LC" | grep -qE '^[[:space:]]*(brain online)\b'; then
-  set_mode "## 🚨 MODE: BRAIN ONLINE (strategy / system work)
+if echo "$PROMPT_LC" | grep -qE '^[[:space:]]*(strategy online)\b'; then
+  set_mode "## 🚨 MODE: STRATEGY ONLINE
 
 **Load these files before responding:**
-- \`Arshia/areas/claude-ops/brain-upgrade/BRAIN-ONLINE-playbook.md\`
-- \`Arshia/areas/claude-ops/brain-upgrade/active-tasks.md\`
-- Latest \`Arshia/areas/claude-ops/brain-upgrade/*phase*.md\`
+- \`path/to/your/strategy-playbook.md\`
+- \`path/to/your/active-tasks.md\`
+- Latest \`path/to/your/notes/*.md\`
 
-**SUPPRESS:** any auto-injected handoff from a different project stream (Portal, Monoli, Elora, etc.). The user is in strategy mode, NOT client delivery mode. Do NOT lead with portal verification or client status updates unless asked.
+**SUPPRESS:** any auto-injected handoff from a different project stream (client work, product, ops, etc.). The user is in strategy mode, NOT delivery mode.
 
-**Follow the playbook opener:** status pulse, backlog, recommendations, today's focus options."
+**Follow your strategy opener:** status pulse, backlog, recommendations, today's focus options."
 fi
 
-if echo "$PROMPT_LC" | grep -qE '^[[:space:]]*(portal online)\b'; then
-  set_mode "## 🚨 MODE: PORTAL ONLINE
+if echo "$PROMPT_LC" | grep -qE '^[[:space:]]*(client-a online)\b'; then
+  set_mode "## 🚨 MODE: CLIENT-A ONLINE
 
 **Load these files before responding:**
-- \`Arshia/projects/stratos/client-portal/STATE.md\`
-- Latest portal session handoff doc
+- \`projects/client-a/STATE.md\`
+- Latest client-a session handoff doc
 
-**SUPPRESS:** any auto-injected context from non-portal streams."
+**SUPPRESS:** any auto-injected context from non-client-a streams."
 fi
 
 # Add more modes here. Same pattern. Five lines each.
