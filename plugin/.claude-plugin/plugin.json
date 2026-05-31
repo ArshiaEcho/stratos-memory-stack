@@ -1,7 +1,7 @@
 {
   "name": "stratos-memory-stack",
-  "version": "1.0.0",
-  "description": "Six-layer persistent memory stack for Claude Code. Auto-audits which layers you have installed, then guides setup of the missing pieces.",
+  "version": "1.1.0",
+  "description": "Six-layer persistent memory stack for Claude Code with optional Mode Activators hook for multi-stream vaults. Auto-audits which layers you have installed, then guides setup of the missing pieces.",
   "author": {
     "name": "Arshia Navabi",
     "email": "arshia@stratosagency.ai",

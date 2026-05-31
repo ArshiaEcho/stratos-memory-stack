@@ -1,6 +1,6 @@
 ---
 name: stratos-memory-stack
-description: Audit, install, and configure the Stratos Memory Stack for Claude Code (six layers: claude-mem, basic-memory, Obsidian, Pinecone, CLAUDE.md/MEMORY.md, STATE.md). Use when the user says "set up memory", "install the memory stack", "audit my memory", "what memory layers do I have", "Stratos memory stack", "/stratos-memory-stack", or asks for persistent context across Claude Code sessions.
+description: Audit, install, and configure the Stratos Memory Stack for Claude Code (six layers: claude-mem, basic-memory, Obsidian, Pinecone, CLAUDE.md/MEMORY.md, STATE.md) plus the optional Mode Activators hook for multi-stream vaults. Use when the user says "set up memory", "install the memory stack", "audit my memory", "what memory layers do I have", "Stratos memory stack", "mode activators", "wrong project context", "/stratos-memory-stack", or asks for persistent context across Claude Code sessions.
 ---
 
 # Stratos Memory Stack
@@ -120,6 +120,32 @@ For each found file, check whether it has the standard frontmatter (`status`, `n
 - `PARTIAL` if files exist but lack the FIRST ACTION block
 - `MISSING` if no project STATE.md files
 
+### Bonus: Mode Activators (only check if multi-stream vault)
+
+Mode Activators are an optional `UserPromptSubmit` hook that fixes the wrong-stream context injection problem in vaults with multiple parallel projects. Only relevant when the user has 3+ active project streams. Single-stream vaults do not need this.
+
+Detect whether to check at all:
+
+```bash
+find . -name "STATE.md" -path "*/projects/*" -maxdepth 5 2>/dev/null | wc -l
+```
+
+If count < 3, mark this row as `N/A (single-stream vault)` and skip the rest. If count >= 3, run the checks below:
+
+```bash
+# Is any UserPromptSubmit hook registered?
+cat ~/.claude/settings.json 2>/dev/null | jq '.hooks.UserPromptSubmit // empty'
+
+# Does any registered hook script contain MODE: activator patterns?
+grep -lE 'MODE:|mode_activator|set_mode' ~/.claude/hooks/*.sh 2>/dev/null
+```
+
+**Status:**
+- `INSTALLED` if hook is registered AND script contains MODE: patterns
+- `PARTIAL` if hook registered but no mode patterns (some other hook), OR mode script exists but hook not wired
+- `MISSING` if no hook with mode patterns
+- `N/A` if single-stream vault (count < 3)
+
 ### Audit report format
 
 Present results to the user as a single table, then a one-line summary, then a single question asking which missing layer to install first.
@@ -133,7 +159,10 @@ Present results to the user as a single table, then a one-line summary, then a s
 | 4 | Pinecone (optional)    | MISSING    | Skip unless user has raw archives      |
 | 5 | CLAUDE.md / MEMORY.md  | INSTALLED  | 90 lines, covers all sections          |
 | 6 | STATE.md               | PARTIAL    | 2 files found, neither has 🚨 block    |
+| + | Mode Activators (bonus)| MISSING    | 4 active streams found, hook not set   |
 ```
+
+The Mode Activators row appears only when the bonus check ran (>= 3 streams). Omit the row entirely for single-stream vaults.
 
 Then ask: "You're missing X, Y, Z. Want to start with [recommended next layer]?"
 
@@ -150,6 +179,7 @@ For each layer, the full step-by-step lives in the `docs/` folder of this plugin
 - **Obsidian + vault structure** → `docs/01-obsidian-setup.md`
 - **Pinecone** → `docs/04-pinecone-setup.md`
 - **File conventions (CLAUDE.md, MEMORY.md, STATE.md)** → `docs/05-file-conventions.md`
+- **Mode Activators (bonus, multi-stream vaults)** → `docs/mode-activators.md`
 
 Templates are in `templates/`:
 
@@ -158,8 +188,11 @@ Templates are in `templates/`:
 - `STATE.md.template`
 - `pinecone_ingest.py`
 - `pinecone_query.py`
+- `mode-activator-hook.sh.template`
 
 When installing a file-convention layer, copy the template, fill in vault-specific details with the user's input, and confirm before writing.
+
+For the Mode Activators install: copy `templates/mode-activator-hook.sh.template` to `~/.claude/hooks/mode-activator.sh`, `chmod +x` it, then register it under `hooks.UserPromptSubmit` in `~/.claude/settings.json`. Ask the user which streams to define modes for (one per active project STATE.md found in audit) and pre-populate the hook with their actual file paths.
 
 ## Recommended install order
 
@@ -171,8 +204,9 @@ If the user has nothing, install in this order:
 4. **claude-mem** (auto session capture)
 5. **basic-memory** (vault search)
 6. **Pinecone** (only if user has raw archives)
+7. **Mode Activators** (only if vault has 3+ active project streams; skip otherwise)
 
-Justify the order: every other layer depends on Obsidian existing. CLAUDE.md and STATE.md give immediate value with zero installs. claude-mem and basic-memory require a bit more setup. Pinecone is only worth it when there's content to index.
+Justify the order: every other layer depends on Obsidian existing. CLAUDE.md and STATE.md give immediate value with zero installs. claude-mem and basic-memory require a bit more setup. Pinecone is only worth it when there's content to index. Mode Activators only earns its keep once the user has enough parallel streams that claude-mem's recency-based auto-injection starts picking the wrong stream.
 
 ## Rules
 
