@@ -62,6 +62,29 @@ The spine is Obsidian. Every other layer is a lens on it.
 
 Full architecture writeup: [`docs/architecture.md`](docs/architecture.md).
 
+## Mode Activators
+
+Once you have more than one active project stream in your vault, claude-mem will start picking the wrong one. The last session you ran was Portal shipping work. This morning you sit down to do strategy work and type `BRAIN ONLINE`. claude-mem auto-injects the Portal handoff because it was most recent, and Claude opens with "ready to verify the portal deploy?" You wanted a strategy pulse.
+
+That is the wrong-stream problem. The fix is small. A `UserPromptSubmit` hook scans your prompt for ONLINE-suffix phrases and prepends a strong directive to the system reminder. The directive tells Claude which files to load for the requested mode, and explicitly tells it to suppress the auto-injected context from any other stream.
+
+You type the phrase. The hook fires before Claude reads the auto-injection. The mode wins.
+
+Common modes (you define your own):
+
+| Phrase | Loads | Suppresses |
+|---|---|---|
+| `BRAIN ONLINE` | brain-upgrade playbook, active tasks, latest phase notes | client delivery, portal status |
+| `PORTAL ONLINE` | client-portal STATE.md, latest portal handoff | brain, product, marketing |
+| `MONOLI ONLINE` | monoli STATE.md, latest monoli brief | non-Monoli streams |
+| `ELORA ONLINE` | Elora STATE.md, latest Elora handoff | non-Elora streams |
+| `OMNIPHI ONLINE` | omniphi STATE.md, latest handoff | non-OmniPhi streams, co-founder tasks |
+| `NEPHROCAN ONLINE` | nephrocan STATE.md, latest handoff | non-Nephrocan streams |
+
+The hook only adds the activator block when a phrase matches. Normal prompts are untouched. Adding a new mode is a five-line edit.
+
+Full pattern, reference hook, and limitations: [`docs/mode-activators.md`](docs/mode-activators.md).
+
 ## Install
 
 In Claude Code:
