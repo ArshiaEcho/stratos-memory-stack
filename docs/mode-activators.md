@@ -69,7 +69,12 @@ set_mode() {
   fi
 }
 
-if echo "$PROMPT_LC" | grep -qE '\b(brain online)\b'; then
+# Each pattern uses ^[[:space:]]* to anchor at the START of the prompt (allowing
+# leading whitespace). This prevents false positives like "thinking about my
+# brain online dating app" from firing the BRAIN ONLINE mode. The phrase must
+# LEAD the prompt to be treated as a mode switch.
+
+if echo "$PROMPT_LC" | grep -qE '^[[:space:]]*(brain online)\b'; then
   set_mode "## 🚨 MODE: BRAIN ONLINE (strategy / system work)
 
 **Load these files before responding:**
@@ -82,7 +87,7 @@ if echo "$PROMPT_LC" | grep -qE '\b(brain online)\b'; then
 **Follow the playbook opener:** status pulse, backlog, recommendations, today's focus options."
 fi
 
-if echo "$PROMPT_LC" | grep -qE '\b(portal online)\b'; then
+if echo "$PROMPT_LC" | grep -qE '^[[:space:]]*(portal online)\b'; then
   set_mode "## 🚨 MODE: PORTAL ONLINE
 
 **Load these files before responding:**
@@ -102,7 +107,9 @@ fi
 exit 0
 ```
 
-The first matched mode wins, so put your most-used modes near the top if two phrases could collide. In practice they rarely do, because ONLINE-suffix phrases are distinctive enough.
+**Precedence is SCRIPT ORDER, not prompt-text order.** If a single prompt contains both `BRAIN ONLINE` and `PORTAL ONLINE`, whichever `if` block runs first in the script wins (even if the user typed the other one first in the text). Put your most-used modes near the top so you get the right default when phrases collide. In practice they rarely do, because ONLINE-suffix phrases are distinctive enough.
+
+**Anchoring matters.** The `^[[:space:]]*` prefix on each regex means the mode phrase must LEAD the prompt (after any leading whitespace). Without this anchor, casual phrases like "thinking about my brain online dating app" would incorrectly fire the BRAIN ONLINE mode block and suppress legitimate context. If you change the anchor to a plain `\b(...)\b`, you get false positives every time the mode phrase appears anywhere in the prompt.
 
 ## Adding a new mode
 
