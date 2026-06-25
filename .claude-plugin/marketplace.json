@@ -11,9 +11,9 @@
   "plugins": [
     {
       "name": "stratos-memory-stack",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "source": "./plugin",
-      "description": "Six-layer memory stack for Claude Code: claude-mem, basic-memory, Obsidian, Pinecone, CLAUDE.md/MEMORY.md, and STATE.md. Plus an optional Mode Activators hook that prevents wrong-stream context injection in vaults with multiple parallel projects. Auto-audits your machine and guides install."
+      "description": "Memory that learns and keeps itself current. Six-layer memory stack (claude-mem, basic-memory, Obsidian, Pinecone, CLAUDE.md/MEMORY.md, STATE.md) plus a nightly learning loop: a capture hook, recurrence-gated consolidation, cross-department scouts that find new tools, and a conductor that ranks them into a daily board. Optional Mode Activators hook for multi-stream vaults. Auto-audits and guides install."
     }
   ]
 }

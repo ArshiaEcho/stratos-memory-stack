@@ -57,10 +57,10 @@ mkdir -p inbox projects areas resources knowledge/raw knowledge/wiki _templates 
 
 From Settings > Community Plugins, turn on:
 
-- **Templater** — programmable note templates. Worth it just for daily notes.
-- **Dataview** — query your vault like a database. Useful for STATE.md indexes.
-- **Periodic Notes** — opens today's daily note with a hotkey.
-- **Git** (optional) — backs your vault up to a private GitHub repo.
+- **Templater** - programmable note templates. Worth it just for daily notes.
+- **Dataview** - query your vault like a database. Useful for STATE.md indexes.
+- **Periodic Notes** - opens today's daily note with a hotkey.
+- **Git** (optional) - backs your vault up to a private GitHub repo.
 
 ## Verify
 

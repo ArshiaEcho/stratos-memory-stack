@@ -1,0 +1,58 @@
+# Scouts - nightly tool-radar deltas via GitHub Actions.
+# One job runs all departments in sequence, then ONE commit. No matrix:
+# a matrix pins each job to the triggering commit and they cannot safely
+# merge appends to the same tool-radar.md. Sequential-in-one-job avoids that.
+#
+# Setup:
+#  1. Put your vault in a (private) git repo.
+#  2. Add an ANTHROPIC_API_KEY repo secret (Settings > Secrets > Actions).
+#  3. Copy this file to .github/workflows/scouts.yml and adjust the paths below
+#     to wherever you placed the learning/ files and your inbox/tool-radar.md.
+#  4. Trigger once from the Actions tab to test.
+#
+# Crons are UTC. Offset for your timezone. Silent unless changed.
+
+name: scouts
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scouts
+  cancel-in-progress: false
+
+jobs:
+  scouts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Claude Code
+        run: npm i -g @anthropic-ai/claude-code
+      - name: Run all scouts in sequence
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set -u
+          # EDIT: your department list
+          for DEPT in technology llms-models design operations-growth; do
+            echo "::group::scout $DEPT"
+            claude -p "You are the ${DEPT} scout. Read learning/engines/scout.md and learning/engines/scout-sources.md, then follow the routine for department ${DEPT}. Append only genuine deltas to inbox/tool-radar.md and update the last-seen marker, or output the [SILENT] line and change nothing. No em dashes." \
+              --allowedTools WebSearch Read Write Bash \
+              --dangerously-skip-permissions \
+              --model claude-sonnet-4-6 \
+              --max-budget-usd 2 < /dev/null || echo "::warning::scout $DEPT exited nonzero, continuing"
+            echo "::endgroup::"
+          done
+      - name: Commit deltas (silent unless changed)
+        run: |
+          git config user.name "scout-bot"
+          git config user.email "scout@users.noreply.github.com"
+          git add inbox/tool-radar.md
+          git diff --staged --quiet || (git commit -m "scouts: nightly deltas" && git push)

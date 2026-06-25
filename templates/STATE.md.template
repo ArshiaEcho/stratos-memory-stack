@@ -47,4 +47,4 @@ Print the "Last session summary" block below verbatim as your first chat reply, 
 
 # Blockers (with owner)
 
-- [ ] {{BLOCKER_1}} — owner: {{OWNER}}, ETA: {{ETA}}
+- [ ] {{BLOCKER_1}} - owner: {{OWNER}}, ETA: {{ETA}}

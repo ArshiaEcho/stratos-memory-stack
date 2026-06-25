@@ -1,0 +1,42 @@
+# Consolidation - nightly promote + decay digest via GitHub Actions.
+# Reads the capture buffer, proposes which recurring patterns should graduate
+# into rules, flags stale facts. GATED: it only writes a digest. It never edits
+# your MEMORY.md or merges anything. You review the digest and apply what you want.
+#
+# Setup: same as scouts.yml. Your capture buffer must be inside the git repo so
+# this job can read it. Adjust paths. Runs after the scouts.
+
+name: consolidation
+on:
+  schedule:
+    - cron: "40 9 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Claude Code
+        run: npm i -g @anthropic-ai/claude-code
+      - name: Run consolidation (digest only)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          claude -p "You are the Consolidation engine. Read learning/engines/consolidate.md and follow the routine exactly. Read the capture buffer, propose promotions and decay flags, and WRITE ONLY inbox/brain-digest.md. Do NOT edit MEMORY.md, do NOT create skills, do NOT delete buffer lines. No em dashes." \
+            --allowedTools Read Write Bash \
+            --dangerously-skip-permissions \
+            --model claude-sonnet-4-6 \
+            --max-budget-usd 2 < /dev/null || echo "::warning::consolidation exited nonzero, continuing"
+      - name: Commit the digest only (proposal, never a rule change)
+        run: |
+          git config user.name "librarian-bot"
+          git config user.email "librarian@users.noreply.github.com"
+          git add inbox/brain-digest.md
+          git diff --staged --quiet || (git commit -m "consolidation: nightly digest (proposal)" && git push)
