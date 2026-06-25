@@ -1,0 +1,51 @@
+# Conductor profile. This single file is what personalizes the whole learning loop.
+# Edit it to describe yourself. The scouts read it to judge relevance; the Conductor
+# reads it to rank missions. NO secrets here (no keys, account numbers, or passwords).
+# This is a TEMPLATE with placeholder values. Replace everything.
+
+operator:
+  name: Your Name
+  role: What you do (e.g. solo founder, indie dev, agency operator)
+  self_concept: One line on how you see your work
+
+focus: >
+  What you are actually trying to do right now, in one or two sentences.
+  The Conductor optimizes missions toward this.
+
+top_metric: The single number you are trying to move (e.g. monthly revenue, shipped features, users)
+near_term_goal: The next concrete milestone
+
+bottleneck: >
+  Your real constraint right now. Anything that relieves this is high value.
+  Be honest here; it sharpens the Conductor more than anything else.
+
+ranking:
+  # Weighted blend, weights sum to 1.0. Tune to taste. The first dimension breaks ties.
+  formula: impact*0.5 + leverage*0.3 + edge*0.2
+  main_quest: moves your top metric now, or serves an active project
+  side_quest: capability gain or time-save
+  cap_per_day: 3
+  anti_horoscope: every mission needs a concrete why-you tied to an active focus AND a grounded potential, or it does not surface
+
+interests:
+  - the kinds of tools, ideas, or moves you want surfaced
+  - aesthetic or quality constraints that matter to you
+  - anything you want to be early on
+
+active_projects:
+  - project one (what it is)
+  - project two (what it is)
+
+stack:
+  # The tools, frameworks, and services you actually use. Scouts use this to judge fit.
+  primary: [list, your, core, stack]
+  services: [the, paid, services, you, run]
+
+constraints:
+  - hard rules the loop must respect (writing style, what never to do)
+  - cost posture (which model tier for which job)
+
+delivery:
+  # Where the top-3 missions go. Off by default; wire it when you trust the output.
+  channel: none   # e.g. telegram, email, dashboard-file
+  autosend: false

@@ -1,0 +1,46 @@
+# Conductor - nightly ranked mission board via GitHub Actions.
+# Runs after the scouts. Reads the tool-radar + profile + active project state,
+# ranks opportunities into missions, writes the board. Single job, single commit.
+# Delivery is gated: it writes a draft unless you wire a channel.
+#
+# Setup: same as scouts.yml. Adjust paths. Runs on Opus for ranking quality.
+# Crons are UTC; schedule it a comfortable buffer AFTER the scouts finish.
+
+name: conductor
+on:
+  schedule:
+    - cron: "0 10 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: conductor
+  cancel-in-progress: false
+
+jobs:
+  conductor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Claude Code
+        run: npm i -g @anthropic-ai/claude-code
+      - name: Generate the daily mission board
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          claude -p "You are the Conductor. Read learning/engines/conductor.md and learning/conductor/mission-schema.md, then follow the routine exactly. Rank missions from inbox/tool-radar.md plus learning/conductor/profile.yaml plus the active projects/**/STATE.md files. Overwrite inbox/missions/today.md and append one line per top-3 mission to inbox/missions/_log.md. Write a delivery draft but do not send. No em dashes." \
+            --allowedTools Read Write Bash \
+            --dangerously-skip-permissions \
+            --model claude-opus-4-8 \
+            --max-budget-usd 5 < /dev/null || echo "::warning::conductor exited nonzero, continuing"
+      - name: Commit missions (silent unless changed)
+        run: |
+          git config user.name "conductor-bot"
+          git config user.email "conductor@users.noreply.github.com"
+          git add inbox/missions/
+          git diff --staged --quiet || (git commit -m "conductor: nightly missions" && git push)

@@ -5,13 +5,14 @@
 <h1 align="center">Stratos Memory Stack</h1>
 
 <p align="center">
-  <strong>Six layers that give Claude Code real memory across sessions.</strong><br/>
-  Drop in. Audit. Install what's missing.
+  <strong>Memory that learns and keeps itself current.</strong><br/>
+  Six layers that remember. A learning loop that keeps it sharp. Drop in. Audit. Install what's missing.
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/Claude_Code-Plugin-7FFFB0?style=flat-square&labelColor=050709" alt="Claude Code Plugin"/></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-CDB06A?style=flat-square&labelColor=050709" alt="MIT License"/></a>
+  <a href="#the-learning-loop"><img src="https://img.shields.io/badge/Self_Evolving-Learning_Loop-CDB06A?style=flat-square&labelColor=050709" alt="Learning Loop"/></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-F2F5F4?style=flat-square&labelColor=050709" alt="MIT License"/></a>
   <a href="https://www.stratosagency.ai"><img src="https://img.shields.io/badge/by-Stratos_House_AI-F2F5F4?style=flat-square&labelColor=050709" alt="by Stratos House AI"/></a>
 </p>
 
@@ -19,13 +20,17 @@
 
 ## What this is
 
-A free Claude Code plugin that sets up a six-layer persistent memory system. Install it, run the skill, and Claude will:
+A free Claude Code plugin in two halves.
+
+**The memory half (six layers).** Install it, run the skill, and Claude will:
 
 1. **Audit** your machine. Check which of the six layers you already have.
 2. **Report** a clean status table (`INSTALLED` / `PARTIAL` / `MISSING` per layer).
 3. **Install** the missing pieces one at a time, with your confirmation.
 
 You end up with a stack that means you never re-explain a project, never lose a decision, and never re-read a 40-page doc to find one number.
+
+**The learning half (a nightly loop).** Memory remembers. Learning changes behavior. The loop captures the rules you teach Claude in passing, scouts the web every night for new tools that fit you, and ranks them into a daily board of opportunities. Your brain stops being a notebook and starts being a nervous system. [Jump to the learning loop](#the-learning-loop).
 
 ## The six layers
 
@@ -61,6 +66,40 @@ The spine is Obsidian. Every other layer is a lens on it.
 - `CLAUDE.md`, `MEMORY.md`, and `STATE.md` are pointers *into* the vault that load at the right time.
 
 Full architecture writeup: [`docs/architecture.md`](docs/architecture.md).
+
+## The learning loop
+
+The six layers above are the **recall** half. They remember perfectly, but they never get smarter on their own, and they do not know what shipped in the world this week. The learning loop is the **write-back** half. Four small organs, running nightly, that turn your brain from a notebook into a nervous system.
+
+```
+        +-----------------------------------------------+
+        |                                               v
+   (1) CAPTURE --> (2) CONSOLIDATION --> rules / skills
+   SessionEnd hook    promote repeated                  |
+   writes the rules   lessons, flag stale facts         | feeds judgment
+   you say out loud   (a digest you approve)            v
+        ^                                         (4) CONDUCTOR --> your channel
+        |                                         ranks the radar into     + a board
+        | your accept / dismiss                   a daily board of missions
+        | is training data                              ^
+        +----------------------------------------------+
+                                                        |
+   (3) SCOUTS: nightly, per department, diff your        |
+       sources and append only what is new --------------+
+```
+
+| Organ | What it does |
+|---|---|
+| **Capture** | A `SessionEnd` hook records the rules you say in passing ("from now on, always...") before they are lost. |
+| **Consolidation** | Nightly, it promotes a pattern that recurs 2-3 times into an enforced rule, and flags stale facts. It writes a digest you approve; it never edits rules on its own. |
+| **Scouts** | Nightly, one scout per department web-searches your sources for genuinely new tools, models, and libraries that fit your stack, and files them to a tool-radar. Silent when nothing changed. |
+| **Conductor** | Nightly, it ranks the radar into a short board of opportunities, by weights you set, and delivers the top few to a channel you choose. |
+
+**It runs for free.** The nightly engines run on GitHub Actions. Your vault is already a git repo, so "check out, run `claude -p`, commit back" is the platform's native motion. The only cost is the Anthropic tokens per run, capped with `--max-budget-usd`. A realistic bill is a few dollars a month. No new server, no new database, markdown and git all the way down, so every change the brain makes to itself is a commit you can read and revert.
+
+**The loop closes.** The Conductor shows you missions. You accept, snooze, or dismiss. That reaction becomes capture, and over weeks the Conductor learns which missions you actually act on. It evolves its judgment about *you*, not just its config.
+
+Full pattern, engine routines, ready-to-use workflows, and the profile that personalizes it: **[`learning/`](learning/)**.
 
 ## Mode Activators
 
@@ -99,7 +138,7 @@ Then trigger the skill:
 /stratos-memory-stack
 ```
 
-Claude will run the audit and walk you through installing what's missing.
+Claude will run the audit and walk you through installing what's missing. To add the nightly learning loop after your memory layers are in place, follow [`learning/README.md`](learning/README.md).
 
 ## What the audit looks like
 
@@ -120,13 +159,14 @@ Followed by: "You're missing X, Y, Z. Want to start with [recommended next layer
 
 If you want to read through everything before letting Claude touch your machine:
 
-- [`docs/01-obsidian-setup.md`](docs/01-obsidian-setup.md) — Obsidian + vault structure
-- [`docs/02-claude-mem-setup.md`](docs/02-claude-mem-setup.md) — claude-mem install
-- [`docs/03-basic-memory-setup.md`](docs/03-basic-memory-setup.md) — basic-memory MCP
-- [`docs/04-pinecone-setup.md`](docs/04-pinecone-setup.md) — Pinecone (optional)
-- [`docs/05-file-conventions.md`](docs/05-file-conventions.md) — CLAUDE.md, MEMORY.md, STATE.md
-- [`docs/mode-activators.md`](docs/mode-activators.md) — Mode Activators hook for multi-stream vaults (optional)
-- [`docs/architecture.md`](docs/architecture.md) — How it all fits together
+- [`docs/01-obsidian-setup.md`](docs/01-obsidian-setup.md) - Obsidian + vault structure
+- [`docs/02-claude-mem-setup.md`](docs/02-claude-mem-setup.md) - claude-mem install
+- [`docs/03-basic-memory-setup.md`](docs/03-basic-memory-setup.md) - basic-memory MCP
+- [`docs/04-pinecone-setup.md`](docs/04-pinecone-setup.md) - Pinecone (optional)
+- [`docs/05-file-conventions.md`](docs/05-file-conventions.md) - CLAUDE.md, MEMORY.md, STATE.md
+- [`docs/06-learning-loop.md`](docs/06-learning-loop.md) - the nightly learning loop (capture, consolidate, scouts, conductor)
+- [`docs/mode-activators.md`](docs/mode-activators.md) - Mode Activators hook for multi-stream vaults (optional)
+- [`docs/architecture.md`](docs/architecture.md) - How it all fits together
 
 Templates to copy:
 
@@ -135,7 +175,8 @@ Templates to copy:
 - [`templates/STATE.md.template`](templates/STATE.md.template)
 - [`templates/pinecone_ingest.py`](templates/pinecone_ingest.py)
 - [`templates/pinecone_query.py`](templates/pinecone_query.py)
-- [`templates/mode-activator-hook.sh.template`](templates/mode-activator-hook.sh.template) — starter `UserPromptSubmit` hook with 2 example modes
+- [`templates/mode-activator-hook.sh.template`](templates/mode-activator-hook.sh.template) - starter `UserPromptSubmit` hook with 2 example modes
+- [`learning/`](learning/) - the full learning loop: hook, engine routines, workflows, profile
 
 ## Recommended install order
 
@@ -147,8 +188,9 @@ If you're starting from zero, do it in this order:
 4. **`claude-mem`** (auto session capture)
 5. **`basic-memory`** (vault search)
 6. **`Pinecone`** (only if you have raw archives)
+7. **The learning loop** (once the memory layers are stable, add the nightly capture + scouts + conductor)
 
-Total time to a working stack: about 2 hours, spread across a week as you actually need each piece. The skill walks you through each step.
+Total time to a working memory stack: about 2 hours, spread across a week as you actually need each piece. The learning loop is another hour once you are ready. The skill walks you through each step.
 
 ## Why this stack
 
@@ -163,20 +205,16 @@ This stack works because **every layer has a different write authority and a dif
 - `claude-mem` for "what did past me decide?"
 - `basic-memory` for the search layer that ties it all together.
 
-No layer tries to be the whole brain. Each one does one job well.
+And then the learning loop sits on top, so the whole thing does not just remember, it gets sharper and keeps itself current. No layer tries to be the whole brain. Each one does one job well.
 
-## A typical session, end to end
+## A typical day, end to end
 
-1. Open Claude Code in your vault.
-2. `claude-mem` auto-injects relevant past context. You see the recent timeline.
-3. Claude Code auto-loads `CLAUDE.md` (vault rules) and `MEMORY.md` (priorities).
-4. You say a trigger word (e.g. `"PORTAL ONLINE"`).
-5. Claude reads `projects/portal/STATE.md`, sees the 🚨 block, prints the verbatim handoff.
-6. You work. Claude searches via `basic-memory` when it needs vault context, queries `Pinecone` when it needs a quote from a playbook.
-7. End of session: Claude updates `STATE.md` with what shipped and the new next action.
-8. `claude-mem` captures the session automatically. Loop.
-
-No file-hunting. No re-explaining. No "what were we doing again?"
+1. Open Claude Code in your vault. `claude-mem` auto-injects relevant past context.
+2. Claude auto-loads `CLAUDE.md` and `MEMORY.md`. You say a trigger word; it reads the right `STATE.md` and prints the handoff.
+3. You work. Claude searches via `basic-memory`, quotes from `Pinecone`, and when you say "from now on, always..." the **capture** hook quietly records it.
+4. End of session: `STATE.md` and `claude-mem` update. The capture buffer holds today's lessons.
+5. Overnight, on their own: the **scouts** find what shipped in your field, the **conductor** ranks it into a board, and **consolidation** proposes which of your repeated lessons should become permanent rules.
+6. Morning: you open a short list of opportunities instead of a firehose of news. No file-hunting, no re-explaining, and nothing about your field got past you.
 
 ## Credits
 
@@ -187,6 +225,8 @@ This stack is built on the work of others. The Stratos Memory Stack just opinion
 - [Obsidian](https://obsidian.md) by Dynalist Inc.
 - [Pinecone](https://www.pinecone.io)
 - The Karpathy LLM Wiki pattern (`knowledge/raw/` + `knowledge/wiki/`)
+
+The learning loop draws on the self-improving-agent patterns documented across the field in 2025-26: auto-logging capture, Reflexion-style post-mortems, recurrence-gated promotion, and silent-unless-changed scheduled watchers.
 
 ## Share this
 
