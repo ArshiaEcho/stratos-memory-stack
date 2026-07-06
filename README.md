@@ -207,6 +207,16 @@ This stack works because **every layer has a different write authority and a dif
 
 And then the learning loop sits on top, so the whole thing does not just remember, it gets sharper and keeps itself current. No layer tries to be the whole brain. Each one does one job well.
 
+## Owned memory vs vendor memory (July 2026)
+
+Since this stack first shipped (May 2026), memory went native. Claude now generates memory from your chats and consolidates it overnight. ChatGPT rebuilt its memory system in June 2026. New agent memory frameworks launch weekly.
+
+Turn the native features on. They are useful, and nothing here conflicts with them.
+
+But they are not a replacement, for one structural reason: vendor memory lives inside the vendor's product, on the vendor's terms. When a provider re-architects (as happened in the June 2026 rebuild, when some users reported years of saved memories no longer surfacing), your accumulated context changes with it, and none of it is portable.
+
+This stack is the opposite bet. Plain markdown and local databases, readable by any model, exportable by design. The models underneath get swapped or retired, and the memory does not notice.
+
 ## A typical day, end to end
 
 1. Open Claude Code in your vault. `claude-mem` auto-injects relevant past context.
