@@ -71,6 +71,18 @@ This vault uses the Stratos Memory Stack. Six layers.
 - Use Pinecone for raw recall, not full file reads.
 - No em dashes anywhere. Use periods, commas, regular hyphens.
 
+## Client work: contract-first delivery gate
+
+When work is for a customer or stakeholder, their written request is the spec and priority one. Full pattern and the story behind it: `docs/07-contract-first-gate.md` in the stack repo. Non-negotiables before calling any deliverable done:
+
+1. Re-read the customer's SOURCE messages verbatim and audit item by item against them (their words are the spec, not my summary). Keep the audit as a note per engagement (see `CONTRACT-AUDIT.md.template`).
+2. Test on the customer's envelope: for anything visual, viewports that bracket their real hardware ({{e.g. 390/768/1440/1920/2560}}); their browsers, devices, data.
+3. Verify behavior, not existence: crawl real links, exercise real flows.
+4. Never present partial work as complete; name what is and is not covered.
+5. "Green" only describes what was actually tested, with its scope stated.
+6. Releases: contract audit passed, envelope matrix passed, the owner's explicit go, immediate live re-verification after.
+7. Customer-reported defects: reproduce their exact report first, fix, re-test that reproduction.
+
 ## Active Context
 
 Per-project resume state lives in `projects/<project>/STATE.md`. Do not hand-maintain a long Active Context block here. Let STATE.md files + claude-mem + basic-memory carry that load.

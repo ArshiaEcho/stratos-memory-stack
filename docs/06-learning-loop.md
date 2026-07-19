@@ -55,6 +55,7 @@ You can also run the Conductor on a small always-on box (e.g. a Fly machine with
 - **Keep the capture buffer inside the git repo.** A nightly cloud job cannot read a file that only exists on your laptop.
 - **Make scouts silent on no-change.** A `git diff --staged --quiet ||` guard suppresses empty commits, so the radar only changes when there is real news.
 - **Gate the consolidation digest.** Never let a nightly job edit your always-loaded rules directly. Write a proposal, approve it by hand, and let the git commit be the audit trail.
+- **Memory drift is a delivery hazard, not just an archival one.** Session summaries record what the agent did, in the agent's framing. On client work, verifying against that record is self-referential: everything reads green while the customer's actual request drifts out of the loop. Keep the customer's source messages as first-class raw material and audit deliverables against THEM, not against prior summaries. Full pattern: [the contract-first delivery gate](07-contract-first-gate.md).
 
 ## The closed loop
 
