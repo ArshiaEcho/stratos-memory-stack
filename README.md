@@ -101,6 +101,10 @@ The six layers above are the **recall** half. They remember perfectly, but they 
 
 Full pattern, engine routines, ready-to-use workflows, and the profile that personalizes it: **[`learning/`](learning/)**.
 
+## The contract-first delivery gate
+
+If you use this stack for client or stakeholder work, there is a failure mode that perfect recall makes *worse*: the agent verifies its work against its own session summaries instead of the customer's actual request, and the summaries drift. Everything reads green while the customer keeps being right. We hit this in production; the write-up and the fix are in **[`docs/07-contract-first-gate.md`](docs/07-contract-first-gate.md)**: treat the customer's source messages as immutable raw material, keep a per-engagement contract audit note ([template](templates/CONTRACT-AUDIT.md.template)), encode the delivery gate at three altitudes (always-loaded CLAUDE.md, a deep rule with the story attached, per-project STATE.md), and verify behavior on the customer's hardware envelope, not your own.
+
 ## Mode Activators
 
 Once you have more than one active project stream in your vault, claude-mem will start picking the wrong one. The last session you ran was Portal shipping work. This morning you sit down to do strategy work and type `BRAIN ONLINE`. claude-mem auto-injects the Portal handoff because it was most recent, and Claude opens with "ready to verify the portal deploy?" You wanted a strategy pulse.

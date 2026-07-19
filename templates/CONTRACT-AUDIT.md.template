@@ -1,0 +1,43 @@
+---
+title: {{CLIENT_OR_PROJECT}}, Contract Audit ({{DATE}})
+created: {{DATE}}
+tags: [client, contract-audit]
+status: growing
+type: doc
+---
+
+# {{CLIENT_OR_PROJECT}}, Contract Audit
+
+Every request the customer made, quoted from THEIR source messages, checked item by item against the current deliverable. Build this note by re-reading the source messages verbatim, never from prior session summaries. Re-walk it before any "done" claim, and after every new customer message.
+
+Sources (link or cite each; these are immutable raw material):
+- {{SOURCE_1, e.g. email subject + date + thread id}}
+- {{SOURCE_2, e.g. call notes + date}}
+
+## The requests, item by item
+
+| # | Their request (their words, quoted or tightly paraphrased) | Source | Status | How verified |
+|---|---|---|---|---|
+| 1 | "{{QUOTED_REQUEST}}" | {{SOURCE}} | DONE / PARTIAL / HOLD / NOT DONE | {{exact check: what was exercised, on what device or data, when}} |
+| 2 | | | | |
+
+Status honesty rules:
+- PARTIAL means partial. Name exactly what is covered and what is not.
+- DONE requires a behavior-level check (the flow was exercised), not an existence check.
+- HOLD names who or what it waits on.
+
+## Verification envelope for this engagement
+
+- Visual surfaces: viewports {{e.g. 390 / 768 / 1440 / 1920 / 2560}} (bracket the customer's real hardware, not the dev machine)
+- Flows exercised end to end: {{e.g. purchase, inquiry form, search, navigation crawl}}
+- Live re-check after each release: {{what runs, e.g. full link crawl + flow tests, and the last run's result}}
+
+## Defect reports from the customer
+
+| Date | Their report (their words) | Reproduced as reported? | Root cause | Fixed + re-tested on their reproduction? |
+|---|---|---|---|---|
+| | | | | |
+
+## Open items flagged back to the customer
+
+- {{decision or confirmation the customer owes, with the date it was asked}}
