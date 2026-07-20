@@ -1,7 +1,7 @@
 {
   "name": "stratos-memory-stack",
-  "version": "1.3.0",
-  "description": "Memory that learns and keeps itself current. A six-layer persistent memory stack for Claude Code, plus a nightly learning loop (capture, consolidation, scouts, conductor) that promotes your repeated lessons into rules and surfaces new tools that fit your stack. Auto-audits which layers you have, then guides setup.",
+  "version": "2.0.0",
+  "description": "Memory that learns and keeps itself current. A seven-layer persistent memory stack for Claude Code (claude-mem, basic-memory, Obsidian, Pinecone, CLAUDE.md/MEMORY.md, STATE.md, and an optional unified retrieval engine: one pgvector table over every corpus, hybrid search fused with RRF, served as MCP primitives), plus a nightly learning loop (capture, consolidation, scouts, conductor). Auto-audits which layers you have, then guides setup.",
   "author": {
     "name": "Arshia Navabi",
     "email": "arshia@stratosagency.ai",
@@ -11,17 +11,23 @@
   "repository": "https://github.com/ArshiaEcho/stratos-memory-stack",
   "license": "MIT",
   "keywords": [
-    "memory",
-    "stack",
-    "obsidian",
-    "claude-mem",
-    "basic-memory",
-    "pinecone",
-    "knowledge-management",
-    "stratos",
-    "learning-loop",
-    "self-improving",
     "agents",
-    "self-evolving"
+    "basic-memory",
+    "claude-mem",
+    "hybrid-search",
+    "knowledge-base",
+    "knowledge-management",
+    "learning-loop",
+    "memory",
+    "obsidian",
+    "pgvector",
+    "pinecone",
+    "rag",
+    "rrf",
+    "self-evolving",
+    "self-improving",
+    "stack",
+    "stratos",
+    "unified-retrieval"
   ]
 }

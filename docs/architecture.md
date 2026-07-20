@@ -1,6 +1,6 @@
 # Architecture
 
-How the six layers fit together.
+How the seven layers fit together.
 
 ## The ring model
 
@@ -31,8 +31,9 @@ Each layer has a different writer. This is what keeps them from fighting:
 | claude-mem | Auto (captures session) | At session end |
 | CLAUDE.md / MEMORY.md | You, hand-curated | Rarely. Days or weeks |
 | STATE.md | You + Claude | Every session, per project |
+| Unified retrieval (L7) | Auto (connector scripts) | On ingest runs; derived data only, fully rebuildable |
 
-If two layers tried to be the single source of truth, they'd diverge. Splitting write authority by layer prevents that.
+If two layers tried to be the single source of truth, they'd diverge. Splitting write authority by layer prevents that. Layer 7 never becomes a write target for humans or agents: it is a derived index over the other layers' content, and deleting it loses nothing.
 
 ## Read order
 
@@ -43,7 +44,8 @@ When Claude needs context, query in this order:
 3. **basic-memory** for vault-wide semantic recall. Cheap and fast.
 4. **claude-mem** for past session decisions. Local SQLite, fast.
 5. **Pinecone** for raw archives. Network call but cheap.
-6. **Read whole files** only as a last resort.
+6. **Unified retrieval (Layer 7)**, when installed, for cross-corpus questions ("what did we decide about X?") that span meetings, notes, and sessions. One query, fused ranking, evidence rows with scores.
+7. **Read whole files** only as a last resort.
 
 The cost-per-token-of-signal goes up as you go down the list. Always start at the top.
 
@@ -88,6 +90,17 @@ Obsidian is the substrate. Every other layer is a lens that watches or compresse
 Most "AI memory" setups pick one tool and try to make it do everything. Vector DBs are bad at rules. Rules files are bad at search. Session logs are bad at archives. By splitting the problem across six purpose-fit layers, you avoid the failure mode where one tool is mediocre at all three.
 
 The cost is setup time (about 2 hours total, spread across a week as you need each piece). The payoff is sessions that open already knowing what you were doing yesterday, queries that find notes by meaning, and zero re-explaining.
+
+## Layer 7: the unified retrieval engine (optional)
+
+The ring model above answers "where does each kind of memory live." Layer 7 answers a different question: "how do I search all of it at once." It is one Postgres + pgvector table that connector scripts fill from every corpus (meeting transcripts, vault notes, code, session summaries), queried through hybrid search (vector + full-text + recency) fused with reciprocal rank fusion and served as LLM-free MCP primitives.
+
+Two properties keep it from violating the ring model:
+
+- **It is derived data.** Sources of truth are never touched; the whole index rebuilds from scratch. Delete it and nothing is lost.
+- **It is read-only at query time.** Nothing writes back through it, so it cannot diverge from the layers it indexes.
+
+Full design, schema, and setup: [`08-unified-retrieval.md`](08-unified-retrieval.md).
 
 ## Failure modes
 

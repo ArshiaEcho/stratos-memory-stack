@@ -11,9 +11,9 @@
   "plugins": [
     {
       "name": "stratos-memory-stack",
-      "version": "1.2.0",
+      "version": "2.0.0",
       "source": "./plugin",
-      "description": "Memory that learns and keeps itself current. Six-layer memory stack (claude-mem, basic-memory, Obsidian, Pinecone, CLAUDE.md/MEMORY.md, STATE.md) plus a nightly learning loop: a capture hook, recurrence-gated consolidation, cross-department scouts that find new tools, and a conductor that ranks them into a daily board. Optional Mode Activators hook for multi-stream vaults. Auto-audits and guides install."
+      "description": "Memory that learns and keeps itself current. Seven-layer memory stack (claude-mem, basic-memory, Obsidian, Pinecone, CLAUDE.md/MEMORY.md, STATE.md, plus an optional unified retrieval engine: one pgvector table, hybrid search, RRF fusion, MCP primitives) with a nightly learning loop: capture hook, recurrence-gated consolidation, cross-department scouts, and a conductor that ranks findings into a daily board. Optional Mode Activators hook for multi-stream vaults. Auto-audits and guides install."
     }
   ]
 }

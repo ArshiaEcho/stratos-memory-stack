@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Memory that learns and keeps itself current.</strong><br/>
-  Six layers that remember. A learning loop that keeps it sharp. Drop in. Audit. Install what's missing.
+  Seven layers that remember. A learning loop that keeps it sharp. Drop in. Audit. Install what's missing.
 </p>
 
 <p align="center">
@@ -22,9 +22,9 @@
 
 A free Claude Code plugin in two halves.
 
-**The memory half (six layers).** Install it, run the skill, and Claude will:
+**The memory half (seven layers).** Install it, run the skill, and Claude will:
 
-1. **Audit** your machine. Check which of the six layers you already have.
+1. **Audit** your machine. Check which of the seven layers you already have.
 2. **Report** a clean status table (`INSTALLED` / `PARTIAL` / `MISSING` per layer).
 3. **Install** the missing pieces one at a time, with your confirmation.
 
@@ -32,7 +32,7 @@ You end up with a stack that means you never re-explain a project, never lose a 
 
 **The learning half (a nightly loop).** Memory remembers. Learning changes behavior. The loop captures the rules you teach Claude in passing, scouts the web every night for new tools that fit you, and ranks them into a daily board of opportunities. Your brain stops being a notebook and starts being a nervous system. [Jump to the learning loop](#the-learning-loop).
 
-## The six layers
+## The seven layers
 
 | # | Layer | What it does |
 |---|---|---|
@@ -42,8 +42,9 @@ You end up with a stack that means you never re-explain a project, never lose a 
 | 4 | **[Pinecone](https://www.pinecone.io)** | Vector archive of immutable raw docs for fast quoting without re-reading. |
 | 5 | **`CLAUDE.md` + `MEMORY.md`** | Rules and priorities Claude Code auto-loads every session. |
 | 6 | **`STATE.md` per project** | Per-project resume file with verbatim handoff summary. |
+| 7 | **Unified retrieval engine** | One pgvector table over every corpus, hybrid search fused with RRF, served as MCP primitives. Optional, advanced. |
 
-Four are tools you install. Two are file patterns you adopt. All six talk to each other.
+Four are tools you install. Two are file patterns you adopt. The seventh is a small engine you build from [`docs/08-unified-retrieval.md`](docs/08-unified-retrieval.md) once a corpus outgrows the prompt window. All seven talk to each other.
 
 ## How they connect
 
@@ -67,9 +68,25 @@ The spine is Obsidian. Every other layer is a lens on it.
 
 Full architecture writeup: [`docs/architecture.md`](docs/architecture.md).
 
+## Layer 7: the unified retrieval engine
+
+Layers 1-6 remember perfectly inside their own lanes, but a real question ("what did we decide about X?") can live in a meeting transcript, a vault note, or a session summary, and each layer has to be searched separately with no shared ranking. Layer 7 is the fix: **one query, every corpus, one fused ranking.**
+
+The pattern is adapted from the internal knowledge base Cerebras published in July 2026 (15,000 employee questions a day), scaled down to run on a laptop for one person at zero embedding cost:
+
+- **One Postgres + pgvector table.** Every source (meetings, notes, code, anything) lands in the same row shape through a small connector script. The row contract IS the integration surface.
+- **Distill before you embed.** Raw conversations are never embedded. A small model extracts a normalized artifact (summary, decisions, action items, key facts) and that is what gets indexed. This was Cerebras' single biggest accuracy win.
+- **Hybrid retrieval, fused.** Vector search catches paraphrase, full-text catches exact tokens, recency breaks ties. Reciprocal rank fusion merges the lists so consensus beats any single scorer. Optional small-model rerank on the top 20.
+- **MCP primitives, not an answer machine.** Tools return raw evidence rows, LLM-free. The calling agent orchestrates and synthesizes with citations.
+- **Delta-only and loud-failure.** Content hashing makes re-ingestion nearly free; ingest workers abort visibly instead of dying silently.
+
+When NOT to build it: if your corpus fits in ~200k tokens, prompt caching beats retrieval. Build Layer 7 for the corpora that cannot fit.
+
+Full pattern, schema, and setup: [`docs/08-unified-retrieval.md`](docs/08-unified-retrieval.md).
+
 ## The learning loop
 
-The six layers above are the **recall** half. They remember perfectly, but they never get smarter on their own, and they do not know what shipped in the world this week. The learning loop is the **write-back** half. Four small organs, running nightly, that turn your brain from a notebook into a nervous system.
+The layers above are the **recall** half. They remember perfectly, but they never get smarter on their own, and they do not know what shipped in the world this week. The learning loop is the **write-back** half. Four small organs, running nightly, that turn your brain from a notebook into a nervous system.
 
 ```
         +-----------------------------------------------+
@@ -155,6 +172,7 @@ Claude will run the audit and walk you through installing what's missing. To add
 | 4 | Pinecone (optional)    | MISSING    | Skip unless user has raw archives      |
 | 5 | CLAUDE.md / MEMORY.md  | INSTALLED  | 90 lines, covers all sections          |
 | 6 | STATE.md               | PARTIAL    | 2 files found, neither has 🚨 block    |
+| 7 | Unified retrieval (opt)| MISSING    | No pgvector index found; corpus small  |
 ```
 
 Followed by: "You're missing X, Y, Z. Want to start with [recommended next layer]?"
@@ -169,6 +187,7 @@ If you want to read through everything before letting Claude touch your machine:
 - [`docs/04-pinecone-setup.md`](docs/04-pinecone-setup.md) - Pinecone (optional)
 - [`docs/05-file-conventions.md`](docs/05-file-conventions.md) - CLAUDE.md, MEMORY.md, STATE.md
 - [`docs/06-learning-loop.md`](docs/06-learning-loop.md) - the nightly learning loop (capture, consolidate, scouts, conductor)
+- [`docs/08-unified-retrieval.md`](docs/08-unified-retrieval.md) - Layer 7, the unified retrieval engine (pgvector + hybrid search + RRF, optional)
 - [`docs/mode-activators.md`](docs/mode-activators.md) - Mode Activators hook for multi-stream vaults (optional)
 - [`docs/architecture.md`](docs/architecture.md) - How it all fits together
 
@@ -193,6 +212,7 @@ If you're starting from zero, do it in this order:
 5. **`basic-memory`** (vault search)
 6. **`Pinecone`** (only if you have raw archives)
 7. **The learning loop** (once the memory layers are stable, add the nightly capture + scouts + conductor)
+8. **The unified retrieval engine** (last, and only once a corpus has outgrown the prompt window)
 
 Total time to a working memory stack: about 2 hours, spread across a week as you actually need each piece. The learning loop is another hour once you are ready. The skill walks you through each step.
 
@@ -239,6 +259,7 @@ This stack is built on the work of others. The Stratos Memory Stack just opinion
 - [Obsidian](https://obsidian.md) by Dynalist Inc.
 - [Pinecone](https://www.pinecone.io)
 - The Karpathy LLM Wiki pattern (`knowledge/raw/` + `knowledge/wiki/`)
+- The unified retrieval layer adapts Cerebras Engineering's "How We Built Our Knowledge Base" (2026), with [pgvector](https://github.com/pgvector/pgvector), [fastembed](https://github.com/qdrant/fastembed), reciprocal rank fusion (Cormack, Clarke, Buttcher, SIGIR 2009), Anthropic's Contextual Retrieval, and [CocoIndex](https://github.com/cocoindex-io/cocoindex) for the code path.
 
 The learning loop draws on the self-improving-agent patterns documented across the field in 2025-26: auto-logging capture, Reflexion-style post-mortems, recurrence-gated promotion, and silent-unless-changed scheduled watchers.
 

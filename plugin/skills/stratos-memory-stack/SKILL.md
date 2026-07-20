@@ -1,13 +1,13 @@
 ---
 name: stratos-memory-stack
-description: Audit, install, and configure the Stratos Memory Stack for Claude Code (six layers: claude-mem, basic-memory, Obsidian, Pinecone, CLAUDE.md/MEMORY.md, STATE.md) plus the optional Mode Activators hook for multi-stream vaults. Use when the user says "set up memory", "install the memory stack", "audit my memory", "what memory layers do I have", "Stratos memory stack", "mode activators", "wrong project context", "/stratos-memory-stack", or asks for persistent context across Claude Code sessions.
+description: Audit, install, and configure the Stratos Memory Stack for Claude Code (seven layers: claude-mem, basic-memory, Obsidian, Pinecone, CLAUDE.md/MEMORY.md, STATE.md, and the optional unified retrieval engine) plus the optional Mode Activators hook for multi-stream vaults. Use when the user says "set up memory", "install the memory stack", "audit my memory", "what memory layers do I have", "Stratos memory stack", "unified retrieval", "knowledge base over my vault", "RAG over my notes", "mode activators", "wrong project context", "/stratos-memory-stack", or asks for persistent context across Claude Code sessions.
 ---
 
 # Stratos Memory Stack
 
-You are setting up or auditing a six-layer persistent memory system for Claude Code. The user wants Claude to remember context across sessions, search their knowledge base by meaning, and never re-explain a project from scratch.
+You are setting up or auditing a seven-layer persistent memory system for Claude Code. The user wants Claude to remember context across sessions, search their knowledge base by meaning, and never re-explain a project from scratch.
 
-## The Six Layers
+## The Seven Layers
 
 | # | Layer | Type | Job |
 |---|---|---|---|
@@ -17,6 +17,7 @@ You are setting up or auditing a six-layer persistent memory system for Claude C
 | 4 | Pinecone | Cloud + scripts | Vector archive of immutable raw docs |
 | 5 | `CLAUDE.md` + `MEMORY.md` | File convention | Rules auto-loaded every session |
 | 6 | `STATE.md` per project | File convention | Per-project resume state with handoff summary |
+| 7 | Unified retrieval engine | Postgres + pgvector + MCP | One embeddings table over every corpus, hybrid search fused with RRF. Optional, advanced |
 
 ## Workflow
 
@@ -120,6 +121,25 @@ For each found file, check whether it has the standard frontmatter (`status`, `n
 - `PARTIAL` if files exist but lack the FIRST ACTION block
 - `MISSING` if no project STATE.md files
 
+### Layer 7: Unified retrieval engine (optional, advanced)
+
+Only worth checking (and only worth installing) when the user has a corpus that cannot fit in the prompt window: large transcript sets, big vaults, client document sets, codebases. Otherwise mark `N/A (corpus fits in prompt)`.
+
+```bash
+# a knowledge database with pgvector and a populated embeddings table?
+psql -l 2>/dev/null | grep -iE "knowledge" | head -3
+psql -d <their_knowledge_db> -tc "SELECT source, count(*) FROM embeddings GROUP BY source" 2>/dev/null
+
+# an MCP server serving retrieval primitives?
+claude mcp list 2>/dev/null | grep -i "knowledge"
+```
+
+**Status:**
+- `INSTALLED` if the embeddings table has rows AND an MCP server is registered
+- `PARTIAL` if the database exists but the MCP server is not wired (or vice versa)
+- `MISSING` if the user has an oversized corpus and no engine
+- `N/A` if every corpus still fits in the prompt window (tell them to skip it; prompt caching wins at that size)
+
 ### Bonus: Mode Activators (only check if multi-stream vault)
 
 Mode Activators are an optional `UserPromptSubmit` hook that fixes the wrong-stream context injection problem in vaults with multiple parallel projects. Only relevant when the user has 3+ active project streams. Single-stream vaults do not need this.
@@ -159,6 +179,7 @@ Present results to the user as a single table, then a one-line summary, then a s
 | 4 | Pinecone (optional)    | MISSING    | Skip unless user has raw archives      |
 | 5 | CLAUDE.md / MEMORY.md  | INSTALLED  | 90 lines, covers all sections          |
 | 6 | STATE.md               | PARTIAL    | 2 files found, neither has 🚨 block    |
+| 7 | Unified retrieval (opt)| N/A        | Corpus fits in prompt, skip for now    |
 | + | Mode Activators (bonus)| MISSING    | 4 active streams found, hook not set   |
 ```
 
@@ -179,6 +200,7 @@ For each layer, the full step-by-step lives in the `docs/` folder of this plugin
 - **Obsidian + vault structure** → `docs/01-obsidian-setup.md`
 - **Pinecone** → `docs/04-pinecone-setup.md`
 - **File conventions (CLAUDE.md, MEMORY.md, STATE.md)** → `docs/05-file-conventions.md`
+- **Unified retrieval engine (Layer 7, optional)** → `docs/08-unified-retrieval.md`
 - **Mode Activators (bonus, multi-stream vaults)** → `docs/mode-activators.md`
 
 Templates are in `templates/`:
@@ -204,9 +226,10 @@ If the user has nothing, install in this order:
 4. **claude-mem** (auto session capture)
 5. **basic-memory** (vault search)
 6. **Pinecone** (only if user has raw archives)
-7. **Mode Activators** (only if vault has 3+ active project streams; skip otherwise)
+7. **Unified retrieval engine** (only when a corpus has outgrown the prompt window)
+8. **Mode Activators** (only if vault has 3+ active project streams; skip otherwise)
 
-Justify the order: every other layer depends on Obsidian existing. CLAUDE.md and STATE.md give immediate value with zero installs. claude-mem and basic-memory require a bit more setup. Pinecone is only worth it when there's content to index. Mode Activators only earns its keep once the user has enough parallel streams that claude-mem's recency-based auto-injection starts picking the wrong stream.
+Justify the order: every other layer depends on Obsidian existing. CLAUDE.md and STATE.md give immediate value with zero installs. claude-mem and basic-memory require a bit more setup. Pinecone is only worth it when there's content to index. The unified retrieval engine is the most powerful and the most setup, so it comes last and only when the corpus demands it. Mode Activators only earns its keep once the user has enough parallel streams that claude-mem's recency-based auto-injection starts picking the wrong stream.
 
 ## Rules
 
@@ -220,4 +243,4 @@ Justify the order: every other layer depends on Obsidian existing. CLAUDE.md and
 
 After each install, run the relevant audit check again and confirm the layer flipped from `MISSING` to `INSTALLED`. If it didn't, debug before moving to the next layer.
 
-At the end of the full install, print the final 6-row status table again and summarize what changed.
+At the end of the full install, print the final 7-row status table again and summarize what changed.
