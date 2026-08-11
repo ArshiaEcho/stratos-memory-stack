@@ -1,3 +1,5 @@
+
+
 <div align="center">
   <img src="assets/social-preview.png" alt="Stratos Memory Stack" width="100%" />
 </div>
@@ -186,7 +188,7 @@ If you want to read through everything before letting Claude touch your machine:
 - [`docs/03-basic-memory-setup.md`](docs/03-basic-memory-setup.md) - basic-memory MCP
 - [`docs/04-pinecone-setup.md`](docs/04-pinecone-setup.md) - Pinecone (optional)
 - [`docs/05-file-conventions.md`](docs/05-file-conventions.md) - CLAUDE.md, MEMORY.md, STATE.md
-- [`docs/06-learning-loop.md`](docs/06-learning-loop.md) - the nightly learning loop (capture, consolidate, scouts, conductor)
+- [`learning/README.md`](learning/README.md) - the nightly learning loop (capture, consolidate, scouts, conductor)
 - [`docs/08-unified-retrieval.md`](docs/08-unified-retrieval.md) - Layer 7, the unified retrieval engine (pgvector + hybrid search + RRF, optional)
 - [`docs/mode-activators.md`](docs/mode-activators.md) - Mode Activators hook for multi-stream vaults (optional)
 - [`docs/architecture.md`](docs/architecture.md) - How it all fits together
